@@ -4,11 +4,12 @@ import com.example.springinaction.Ingredient.Type;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,19 +38,18 @@ private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(De
 @RequestMapping("/design")
 /*
  클래스 수준으로 적용시에는 해당 컨틀로러가 처리하는 요청의 종류를 나타낸다.
- /design 으로 시작한느 경로의 요청을 처리함을 나타낸다.
+ /design 으로 시작하는 경로의 요청을 처리함을 나타낸다.
  */
 public class DesignTacoController {
     @GetMapping
     /*
-    HTTP GET
-    요청이 수신될때 그 요청을 처리하기 위해 showDesignForm() 메서드가 호출됨.
-    
-    스프링 4.3 이전에는 이것대신 메서드 수준의 @RequestMapping(method =RequestMethod.GET) 애노테이션 사용가능
-    @GetMapping 더 간결, HTTP GET 요청 특화.
-    
+     HTTP GET
+     요청이 수신될때 그 요청을 처리하기 위해 showDesignForm() 메서드가 호출됨.
+     
+     스프링 4.3 이전에는 이것대신 메서드 수준의 @RequestMapping(method =RequestMethod.GET) 애노테이션 사용가능
+     @GetMapping 더 간결, HTTP GET 요청 특화.
+     
     */
-    
     public String showDesignForm(Model model) {
         List<Ingredient> ingredients = Arrays.asList(
             new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
@@ -77,7 +77,16 @@ public class DesignTacoController {
     }
     
     @PostMapping
-    public String processDesign(Taco design) {
+    public String processDesign(@Valid Taco design, Errors errors) {
+        /*
+        @Valid 애노테이션은 제출된 Taco 객체의 유효성 검사를 수행(제출된 폼 데이터와 Taco 객체가 바인딩된 후, ProcessDesign() 메서드의 코드가 실행되기 전에)
+        하라고 스프링 MVC에 알려준다.
+        만일 어떤 검사 에러라도 있는 경우, 에러의 상세 내역이 Erros 객체에 저장되어 processDesign() 으로 전달된다.
+        * */
+        if (errors.hasErrors()) {
+            return "design";
+        }
+        
         // 이 지점에서 타코 디자인(선택된 식자재 내역)을 저장
         // 3장에서 진행
         log.info("Processing design: " + design);

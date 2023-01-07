@@ -2,6 +2,8 @@ package com.example.springinaction;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -16,6 +18,10 @@ import java.util.List;
  2023-01-07        ipeac       최초 생성 */
 @Data
 public class Taco {
+    @NotNull
+    @Size(min =  5, message = "이름은 반드시 적어도 5자 이상이여야 합니다.")
     private String name;
+    
+    @Size(min=1, message = "적어도 하나의 재료는 선택해야합니다.")
     private List<String> ingredients;
 }
