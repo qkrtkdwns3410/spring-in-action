@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
 /**
  packageName    : com.example.springinaction
@@ -19,6 +20,9 @@ import javax.validation.constraints.Pattern;
  2023-01-07        ipeac       최초 생성 */
 @Data
 public class Order {
+    private Long id;
+    private LocalDateTime placedAt;
+    
     @NotBlank(message = "이름은 필수입니다.")
     private String deliveryName;
     @NotBlank(message = "Street는 필수입니다.")
